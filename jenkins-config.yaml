@@ -1,0 +1,45 @@
+jenkins-config: |
+          tool:
+            jdk:
+              installations:
+              - home: "/opt/java/openjdk"
+                name: "jenkins-java"
+            maven:
+              installations:
+              - name: "jenkins-maven"
+                properties:
+                - installSource:
+                    installers:
+                    - maven:
+                        id: "3.8.5"
+            git:
+              installations:
+              - home: "git"
+                name: "Default"
+          credentials:
+            system:
+              domainCredentials:
+              - credentials:
+                - usernamePassword:
+                    id: "github-credentials"
+                    password: "{AQAAABAAAAAQRkrVgv4zrDdlnMtoyNYTiyq5GoJToVp/rM3V+rl4TXI=}"
+                    scope: GLOBAL
+                    username: "danisimos"
+        jobs-config: |
+          jobs:
+            - script: >
+                pipelineJob('job-dsl-plugin') {
+                  definition {
+                    cpsScm {
+                      scm {
+                        git {
+                          remote {
+                            url('https://github.com/danisimos/TestTask')
+                            credentials('github-credentials')
+                          }
+                          branch('*/master')
+                        }
+                      }
+                    }
+                  }
+                }
